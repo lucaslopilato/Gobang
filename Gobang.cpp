@@ -1,12 +1,12 @@
 //Gobang.cpp
 //Lucas Lopilato
 //CS165A Machine Problem 2
-#import <stdlib.h>
-#import <stdio.h>
-#import <iostream>
-#import <unistd.h>
-#import "Player.hpp"
+#include <stdlib.h>
+#include <iostream>
+#include <unistd.h>
+#include "Player.hpp"
 
+//Displays Appropriate Error Message
 int mainError(int code){
 	std::cerr << ("Error In Main: ");
 	switch(code){
@@ -19,22 +19,31 @@ int mainError(int code){
 	exit(code);
 }
 
+//Displays Usage Information
 void usage(){
 	std::cout << "Usage: ./Gobang [-n size] [-l]" << std::endl;
-	std::cout << "-n size  specififies size of the board" << std::endl;
-	std::cout << "-l       specifies the light color for this player" <<std::endl;
-	std::cout << "          if not specified, player will use dark pieces" << std::endl;
-	mainError(2);
+	std::cout << "-n size  Specififies size of the board. " << std::endl;
+	std::cout << "          N must be between 5 and 26 including both 5 and 26" << std::endl;
+	std::cout << "-l       Specifies the light color for human player" <<std::endl;
+	std::cout << "          if not specified, player will use light pieces" << std::endl;
+	mainError(1);
 }
 
 int main(int argc, char ** argv)
 {
+	//Default Values
+	int n = 11; //N Defaults to 11
+	Color color = LIGHT; //color defaults to LIGHT
+
 	//Parse Args and Instantiate
 	int c;
 	while((c = getopt(argc, argv, "n:l")) != -1){
 		switch(c){
-			case 'n': break;
-			case 'l': break;
+			case 'n': 
+				n = atoi(optarg);
+				if(n < 5 || n > 26) usage(); 
+				break;
+			case 'l': color = DARK; break;
 			default: usage();
 		}
 	}
