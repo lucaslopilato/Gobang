@@ -7,6 +7,6 @@ Player::Player(int size, Color color): color(color){
 }
 
 Player::~Player(){
-	delete this->board;
+	delete(this->board);
 }
 
