@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "Player.hpp"
 
+
 //Displays Appropriate Error Message
 int mainError(int code){
 	std::cerr << ("Error In Main: ");
@@ -19,6 +20,7 @@ int mainError(int code){
 	exit(code);
 }
 
+
 //Displays Usage Information
 void usage(){
 	std::cout << "Usage: ./Gobang [-n size] [-l]" << std::endl;
@@ -28,6 +30,7 @@ void usage(){
 	std::cout << "          if not specified, player will use light pieces" << std::endl;
 	mainError(1);
 }
+
 
 int main(int argc, char ** argv)
 {
@@ -48,6 +51,8 @@ int main(int argc, char ** argv)
 		}
 	}
 
+	//Instantiate the Player
+	Player player = Player(n, color);
 	
 	return 0;
 }

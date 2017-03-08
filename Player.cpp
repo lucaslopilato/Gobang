@@ -2,7 +2,11 @@
 
 #include "Player.hpp"
 
-Player::Player(int size, Color color): size(size), color(color){}
+Player::Player(int size, Color color): color(color){
+	this->board = new Board(size);
+}
 
-Player::~Player(){}
+Player::~Player(){
+	delete this->board;
+}
 

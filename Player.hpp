@@ -1,7 +1,6 @@
 //Player.hpp
-
-//Types of pieces to be placed
-enum Color{ LIGHT, DARK};
+//
+#include "Board.hpp"
 
 class Player
 {
@@ -10,6 +9,6 @@ public:
 	~Player();
 
 private:
-	int size;
 	Color color;
+	Board* board;
 };
