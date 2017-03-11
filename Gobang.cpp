@@ -53,6 +53,9 @@ int main(int argc, char ** argv)
 
 	//Instantiate the Player
 	Player player = Player(n, color);
+
+	//Tell Player To Play The Game
+	player.play();
 	
 	return 0;
 }

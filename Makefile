@@ -2,7 +2,7 @@
 #165A MP2
 #
 
-CC	= g++ #clang++ 
+CC	= clang++
 LFLAGS = -pthread
 CFLAGS = -g
 
