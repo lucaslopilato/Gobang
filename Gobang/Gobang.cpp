@@ -1,9 +1,9 @@
 //Gobang.cpp
 //Lucas Lopilato
 //CS165A Machine Problem 2
+#include <unistd.h>
 #include <stdlib.h>
 #include <iostream>
-#include <unistd.h>
 #include "Player.hpp"
 
 

@@ -13,6 +13,8 @@ Position Direction::next(Dir choice){
 		case LEFT: return Left();
 		case RIGHT: return Right();
 	}
+
+	return Position(0,0);
 }
 
 Position Direction::UpperLeft() {base = Position(base.first - 1, base.second - 1); return base;}

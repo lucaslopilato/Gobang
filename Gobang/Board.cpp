@@ -11,7 +11,7 @@ bool Board::move(Move* move){
 	int row = move->position().second;
 
 	//Validate Input
-	if(col < 0 || col > size || row < 0 || row > size)
+	if(!validPosition(move->position()))
 		return false;
 
 	//Make sure valid color
@@ -19,6 +19,10 @@ bool Board::move(Move* move){
 
 	//If valid, update and return success
 	board[col][row] = move->color();
+
+	this->print();
+	move->print();
+
 	return true;
 }
 
@@ -53,7 +57,6 @@ Move* Board::bestMove(Color color){
 
 //Find the score of the position on the board
 int Board::score(Position pos, Color color){
-	Position moving = pos;
 	int score = 0;
 	
 	//Keep Track of all consecutive pieces in all directions
@@ -70,7 +73,7 @@ int Board::score(Position pos, Color color){
 	}
 
 	//Calculate Score
-	for(int i=0; i<total.size(); i++){
+	for(unsigned int i=0; i<total.size(); i++){
 		score += pow(10, total[i]);
 	}
 
@@ -163,7 +166,7 @@ void Board::print(){
 		for(j=0; j<(maxpadding + 1 - characters(1+i)); j++){std::cout << " ";}
 
 		for(j=0; j< (size); j++){
-			c = this->board[i][j];
+			c = this->board[j][i];
 			if(c == EMPTY) std::cout << "E";
 			else if(c == LIGHT) std::cout << "L";
 			else std::cout << "D";
