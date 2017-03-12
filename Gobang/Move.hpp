@@ -1,5 +1,6 @@
 //Class representing a move in Gobang
 #include <utility>
+#include <iostream>
 
 
 typedef std::pair<int,int> Position;
@@ -17,6 +18,7 @@ public:
 	Color color();
 
 	void setAttributes(Position pos, int score, Color color);
+	void print();
 
 	//Operator Overloading
 	bool operator <(const Move& other) {return this->sco < other.sco;}

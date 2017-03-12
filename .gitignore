@@ -1,0 +1,11 @@
+
+
+Debug
+Gobang.sdf
+Gobang.v11.suo
+Gobang.opensdf
+
+*.o
+*.suo
+Gobang.sdf
+Gobang/Gobang.vcxproj.user

@@ -5,11 +5,21 @@
 
 //Play the game
 void Player::play(){
-	Position move;
+	Move* best = NULL;
 
 	//If Player is DARK, make the first move
-	if(color == DARK)
-		move = board->bestMove(color);
+   //if(color == DARK)
+	best = board->bestMove(color);
+
+	//Print Move
+	board->move(best);
+	board->print();
+	best->print();
+
+
+	if(best != NULL){
+		delete best;
+	}
 
 	
 }

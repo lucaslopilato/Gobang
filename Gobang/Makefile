@@ -6,7 +6,7 @@ CC	= clang++
 LFLAGS = -pthread
 CFLAGS = -g
 
-OBJECTS = Gobang.o Player.o Board.o
+OBJECTS = Gobang.o Player.o Board.o Move.o Direction.o
 
 Gobang : $(OBJECTS)
 	$(CC) $(OBJECTS) -o Gobang
