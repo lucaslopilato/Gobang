@@ -53,9 +53,11 @@ private:
 
 	int boardScore;
 
-	int scorePosition(Position UL, Color col);
+
+	int score();
+	/*int scorePosition(Position UL, Color col);
 	int scoreDirection(Position pos, Dir dir, Color col);
 	int scoreFriendly(Direction d, Dir dir, Color friendly);
 	int scoreEnemy(Direction d, Dir dir , Color enemy);
-	int maxConsecutive(Position pos, Dir dir, Color target);
+	int maxConsecutive(Position pos, Dir dir, Color target);*/
 };

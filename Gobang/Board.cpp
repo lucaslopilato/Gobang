@@ -320,16 +320,24 @@ int Board::characters(int target){
 /*************************Scoring Functions****************************/
 
 //Score 5x5 Square for the 
-int Board::scorePosition(Position UL, Color col){
+/*int Board::scorePosition(Position UL, Color col){
 	int score = 0;
 
 	//Score Upper Left Diagonal
 
 
 	return score;
-}
+}*/
 
-int Board::scoreDirection(Position pos, Dir dir, Color col){
+
+
+
+
+
+
+
+
+/*int Board::scoreDirection(Position pos, Dir dir, Color col){
 	if(col == EMPTY) return 0;
 	int score = 0;
 
@@ -407,4 +415,4 @@ int Board::maxConsecutive(Position pos, Dir dir, Color target){
 	for(int i=0; i<5; i++){
 
 	}
-}
+}*/
