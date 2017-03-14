@@ -317,102 +317,68 @@ int Board::characters(int target){
 }
 
 
+
 /*************************Scoring Functions****************************/
 
-//Score 5x5 Square for the 
-/*int Board::scorePosition(Position UL, Color col){
+
+int Board::score(Color color){
+	std::vector<std::string> strs;
+	std::vector<std::string> temp;
+
+	//Parse the board into strings for Regex matching
+	Color current;
+
+	//Directions to Check
+	Dir dirs[] = {RIGHT, LR, DOWN, LL};
+	for(int i=0; i<size; i++){
+		for(int j=0; j<size; j++){
+			for(int k=0; k<size; j++){
+				temp = parseDirectionStr(Position(i,j), dirs[k], color);
+				strs.insert(strs.end(), temp.begin(), temp.end());
+			}
+		}
+	}
+
+	//Now Parse Vector of Strings to Score
 	int score = 0;
-
-	//Score Upper Left Diagonal
-
+	for(std::vector<std::string>::iterator it = strs.begin();
+		it != strs.end(); ++it){
+		
+	}
 
 	return score;
-}*/
+}
 
-
-
-
-
-
-
-
-
-/*int Board::scoreDirection(Position pos, Dir dir, Color col){
-	if(col == EMPTY) return 0;
-	int score = 0;
-
-	//Get Base Direction and decide other color
+//Parse direction for the scoring string
+std::vector<std::string> Board::parseDirectionStr(Position pos, Dir dir, Color color){
 	Direction d = Direction(pos);
-	Color other;
-	(col == LIGHT) ? other = DARK : other = LIGHT; 
+	std::vector<std::string> ret;
+	std::string str = "";
+	Color current;
 
+	while(validPosition(pos)){
+		current = get(pos);
 
-	//3 Cases, Friendly, Enemy, or Empty
-	switch(get(d.next(dir))){
-	case(EMPTY):
-		for(int i=0; i<3; i++){
-			if(get(d.next(dir)) == other) return 0;
+		//Parse Current Position
+		if(current == EMPTY) str.push_back('E');
+		else if(current == color) str.push_back('X');
+		else{
+			ret.push_back(str);
+			str = "";
 		}
-		score = 15; //Connect One
-		break;
-	case(LIGHT):
-		for(int i=0; i<3; i++){
-			if(get(d.gext(dir)) == 
-		}
-		break;
-	case(DARK):
-		break;
 
+		//Get New Position
+		pos = d.next(dir);
 	}
 
-	return score;
+	//Push Final String
+	ret.push_back(str);
+
+	return ret;
 }
 
-int Board::scoreFriendly(Direction d, Dir dir, Color friendly){
-	int consecutive = 0;
 
-	for(int i=0; i<3; i++){
-		if(get(d.next(dir)) == friendly) consecutive++;
-		else break;
-	}
+//Score a string using regex matching
+int Board::scoreString(std::string str){
 
-	switch(consecutive){
-	case 0: return 300; //Connect 2
-	case 1: return 1200 //Connect 3
-	case 3: return 
-	}
-
-
-	return score;
 }
-
-int Board::scoreEnemy(Direction d, Dir dir, Color enemy){
-	int consecutive = 0;
-
-	for(int i=0; i<3; i++){
-		if(get(d.next(dir)) == enemy) consecutive++;
-		else break;
-	}
-
-	return score;
-}
-
-int Board::maxConsecutive(Position pos, Dir dir, Color target){
-	Dir opp;
-	switch(dir){
-	case UL: opp = LR; break;
-	case UP: opp = DOWN; break;
-	case UR: opp = LL; break;
-	case LEFT: opp = RIGHT; break;
-	case RIGHT: opp = LEFT; break;
-	case LL: opp = UR; break;
-	case DOWN: opp = UP; break;
-	case LR: opp = UL; break;
-	}
-
-	int max = 0;
-
-	for(int i=0; i<5; i++){
-
-	}
-}*/
