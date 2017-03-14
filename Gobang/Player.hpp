@@ -11,7 +11,10 @@ public:
 	~Player();
 
 	void play();
-	void otherTurn();
+
+	//Turn Handling
+	Board* humanTurn();
+	Board* comTurn();
 
 private:
 	Color color;

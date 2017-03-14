@@ -19,7 +19,7 @@ run: clean Gobang
 	rm -f Gobang *.o
 
 leak: clean Gobang
-	valgrind --leak-check=yes ./Gobang
+	valgrind --leak-check=full ./Gobang
 
 clean:
 	rm -f Gobang *.o
