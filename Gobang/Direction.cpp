@@ -17,6 +17,25 @@ Position Direction::next(Dir choice){
 	return Position(0,0);
 }
 
+Position Direction::opposite(Dir choice){
+	switch(choice){
+		case UL: return next(LR);
+		case UR: return next(LL);
+		case LL: return next(UR);
+		case LR: return next(UL);
+		case UP: return next(DOWN);
+		case DOWN: return next(UP);
+		case LEFT: return next(RIGHT);
+		case RIGHT: return next(LEFT);
+	}
+
+	return Position(0,0);
+}
+
+Position Direction::current(){
+	return this->base;
+}
+
 Position Direction::UpperLeft() {base = Position(base.first - 1, base.second - 1); return base;}
 Position Direction::UpperRight() {base = Position(base.first + 1, base.second - 1); return base;}
 Position Direction::LowerLeft() {base = Position(base.first - 1, base.second + 1); return base;}

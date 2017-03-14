@@ -13,6 +13,8 @@ public:
 	~Direction(void);
 
 	Position next(Dir choice);
+	Position opposite(Dir choice);
+	Position current();
 private:
 	Position base;
 

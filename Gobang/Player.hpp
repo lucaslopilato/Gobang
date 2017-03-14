@@ -1,8 +1,10 @@
 //Player.hpp
 //
+#include <map>
 #include <iostream>
 #include <string>
 #include "Board.hpp"
+#include <queue>
 
 class Player
 {
@@ -21,5 +23,8 @@ private:
 	Color other;
 	Board* board;
 	int size;
+
+	//Scoring Dictionary
+	std::map<std::string, int> scores;
 
 };

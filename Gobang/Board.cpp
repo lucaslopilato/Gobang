@@ -173,16 +173,19 @@ Board::Board(int size) : size(size) {
 	this->in = 0;
 	this->maxcap = size * size;
 	this->boardScore = 0;
+	this->lastmove = NULL;
 }
 
 //Create a new board from an old board and another position
 //New Position must be a valid position (in bounds and at an empty spot)
-Board::Board(Board* obj, Move* move) throw(std::invalid_argument){
+Board::Board(Board* obj, Move* move, std::map<std::string, int> *scores) throw(std::invalid_argument){
 	if(move == NULL || obj == NULL || !obj->validMove(move))
 		throw std::invalid_argument("Invalid value for copy constructor");
 
+
 	//Instantiate the board
 	this->size = obj->size;
+
 	this->board = new Color*[size];
 	for(int i=0; i<size; i++)
 		this->board[i] = new Color[size];
@@ -199,16 +202,11 @@ Board::Board(Board* obj, Move* move) throw(std::invalid_argument){
 
 	this->in = obj->in + 1;
 	this->maxcap = obj->maxcap;
+	this->lastmove = move;
 
 
 	//Rescore new board
-	this->boardScore = obj->boardScore;
-
-	//Print out board and last move
-	this->print();
-	move->print();
-
-	delete move;
+	this->boardScore = this->score(move->color(), scores);
 }
 
 
@@ -222,6 +220,8 @@ Board::~Board(){
 	}
 
 	delete [] board;
+
+	if(lastmove != NULL) delete lastmove;
 }
 
 
@@ -280,6 +280,8 @@ void Board::printPosition(Position pos){
 	std::cout << "or (" << (char)(pos.first + 'a') <<","<< pos.second+1<<")" <<std::endl;
 }
 
+void Board::printLastMove(){ this->lastmove->print(); }
+
 /***************************Helpers***************/
 void Board::scoreDirection(Position origin, Color color, Dir dir, std::vector<int>* agg){
 	if(agg == NULL){
@@ -321,18 +323,15 @@ int Board::characters(int target){
 /*************************Scoring Functions****************************/
 
 
-int Board::score(Color color){
+int Board::score(Color color, std::map<std::string, int> *scores){
 	std::vector<std::string> strs;
 	std::vector<std::string> temp;
 
-	//Parse the board into strings for Regex matching
-	Color current;
-
 	//Directions to Check
 	Dir dirs[] = {RIGHT, LR, DOWN, LL};
-	for(int i=0; i<size; i++){
-		for(int j=0; j<size; j++){
-			for(int k=0; k<size; j++){
+	for(int i=0; i<this->size; i++){
+		for(int j=0; j<this->size; j++){
+			for(int k=0; k<4; k++){
 				temp = parseDirectionStr(Position(i,j), dirs[k], color);
 				strs.insert(strs.end(), temp.begin(), temp.end());
 			}
@@ -343,7 +342,7 @@ int Board::score(Color color){
 	int score = 0;
 	for(std::vector<std::string>::iterator it = strs.begin();
 		it != strs.end(); ++it){
-		
+		score += scoreString(*it, scores);
 	}
 
 	return score;
@@ -354,31 +353,64 @@ std::vector<std::string> Board::parseDirectionStr(Position pos, Dir dir, Color c
 	Direction d = Direction(pos);
 	std::vector<std::string> ret;
 	std::string str = "";
-	Color current;
+
+	//Get the preceeding character
+	if(!validPosition(d.opposite(dir))){
+		str += "Y";
+		d.next(dir); //Move Cursor back
+	}
+
+	//Get First Position
+	Color current = get(pos);
 
 	while(validPosition(pos)){
 		current = get(pos);
 
 		//Parse Current Position
-		if(current == EMPTY) str.push_back('E');
-		else if(current == color) str.push_back('X');
-		else{
-			ret.push_back(str);
-			str = "";
-		}
+		if(current == EMPTY){str += 'E';}
+		else if(current == color){ str+= 'X'; }//Friendly
+		else{ str += 'Y';} //Enemy
 
 		//Get New Position
 		pos = d.next(dir);
 	}
 
+	//Add one more to display you cannot move further
+	str += 'Y';
+
 	//Push Final String
-	ret.push_back(str);
+	if(str.length() >= 5)
+		ret.push_back(str);
 
 	return ret;
 }
 
 
 //Score a string using regex matching
-int Board::scoreString(std::string str){
+int Board::scoreString(std::string str, std::map<std::string, int> *scores){
+	int score = 0;
+	if(scores == NULL){
+		std::cout << "scores should not be null"<<std::endl;
+		return score;
+	}
 
+	for(std::map<std::string, int>::iterator iter = scores->begin(); iter != scores->end(); ++iter){
+		score += occurrences(iter->first, str) * iter->second;
+	}
+
+	return score;
 }
+
+//Count unique occurrences of a substring in a larger string
+int Board::occurrences(std::string substring, std::string bigstr){
+	int occ = 0;
+
+	size_t npos = bigstr.find(substring);
+	while(npos != bigstr.npos){
+		occ++;
+		npos = bigstr.find(substring, npos+1);
+	}
+	return occ;
+}
+
+int Board::getScore(){ return this->boardScore;}

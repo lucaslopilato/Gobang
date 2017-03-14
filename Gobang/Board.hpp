@@ -1,5 +1,7 @@
 //Board.hpp
 #include <vector>
+#include <map>
+#include <string>
 #include <iostream>
 #include "Move.hpp"
 #include "Direction.hpp"
@@ -13,7 +15,7 @@ class Board
 {
 public:
 	Board(int size);
-	Board(Board* obj, Move* move) throw(std::invalid_argument);
+	Board(Board* obj, Move* move, std::map<std::string, int> *scores) throw(std::invalid_argument);
 	~Board();
 
 	//Actions 
@@ -28,6 +30,7 @@ public:
 
 	bool validPosition(Position pos);
 	bool validMove(Move* move);
+	int getScore();
 
 	Color get(Position pos);
 
@@ -37,6 +40,7 @@ public:
 	//Utility Functions
 	void print();
 	void printPosition(Position pos);
+	void printLastMove();
 
 private:
 	int size;
@@ -44,6 +48,8 @@ private:
 
 	int maxcap; //Max capacity
 	int in; //Count of Pieces in board
+	Move* lastmove;
+
 
 	/*******Helpers******/
 	void scoreDirection(Position origin, Color color, Dir dir, std::vector<int>* agg); 
@@ -54,7 +60,8 @@ private:
 	int boardScore;
 
 
-	int score(Color col);
+	int score(Color col, std::map<std::string, int> *scores);
 	std::vector<std::string> parseDirectionStr(Position pos, Dir dir, Color color);
-	int scoreString(std::string str);
+	int scoreString(std::string str, std::map<std::string, int> *scores);
+	int occurrences(std::string substring, std::string bigstr);
 };
