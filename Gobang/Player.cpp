@@ -24,7 +24,7 @@ void Player::play(){
 			hold = humanTurn();
 		}
 
-		//Build a new board with the move
+		//Try the Move
 		try{
 			if(hold == NULL) std::cout << "Invalid Board" << std::endl;
 			if(!this->board->move(hold)) std::cout<<"fucking up " <<std::endl;
@@ -117,8 +117,8 @@ Move* Player::minimax(){
 			//Make sure we have time to start searching again
 			if(timeToGuess(start)){
 				std::cout << "GUessing" <<std::endl;
-				if(score > 0) return new Move(max, color);
-				else return new Move(*minpos, color);
+				if(score > 0){ std::cout << "stored val" <<std::endl; return new Move(max, color); }
+				else { std::cout << "random val" << std::endl; return new Move(*minpos, color);}
 			}
 			if(minpos != maxpos){
 				screenmoves[*minpos]=other; //simulate the move by the other player
