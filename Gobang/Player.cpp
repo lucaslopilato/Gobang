@@ -58,7 +58,7 @@ Move* Player::comTurn(){
 	std::cout << " player (COM) is calculating its next move...";
 	std::cout << "(this might take up to 30 seconds)" << std::endl;
 
-	if(board->getIn() <= 2){
+	if(board->getIn() < 2){
 		if(board->get(Position(size/2, size/2)) == EMPTY)
 			return new Move(Position(size/2, size/2), color);
 		else return new Move(Position(), color);
@@ -150,7 +150,7 @@ Move* Player::minimax(){
 bool Player::timeToGuess(clock_t start){
 	clock_t now = clock();
 
-	if((now - start) > 10000) return true;
+	if((now - start) > 20000) return true;
 	else return false;
 }
 
