@@ -69,6 +69,7 @@ Color Board::get(Position pos, std::map<Position, Color> *screenmoves){
 }
 
 Color Board::winner(){
+	if(in < 10) return EMPTY;
 	Dir dirs[8] = {UL,UR,LL,LR,UP,DOWN,LEFT,RIGHT};
 	Position pos;
 	Position cursor;
