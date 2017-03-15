@@ -4,7 +4,8 @@
 #include <iostream>
 #include <string>
 #include "Board.hpp"
-#include <queue>
+#include <stdlib.h>
+#include <time.h>
 
 class Player
 {
@@ -20,6 +21,9 @@ public:
 
 	//Minimax
 	Move* minimax();
+	Move* random();
+
+	bool timeToGuess(clock_t start);
 
 private:
 	Color color;

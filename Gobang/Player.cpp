@@ -99,17 +99,22 @@ Move* Player::minimax(){
 	Position max;
 	Position min;
 	int score = 0;
+	clock_t start = clock();
 
 	int maxtemp = 0;
 	int mintemp = 0;
-
-	int count = 0;
 
 	//Iterate over all possible moves
 	std::set<Position>::iterator maxpos, minpos;
 	std::map<Position,Color> screenmoves;
 	for(maxpos = (board->available.begin()); maxpos != board->available.end(); ++maxpos){
-		count++;
+		
+		//Make sure we have time to start searching again
+		if(timeToGuess(start)){
+			if(score > 0) return new Move(max, color);
+			else return random();
+		}
+		
 		screenmoves[*maxpos]=color;
 
 		maxtemp = board->getScore(color, &scores, &screenmoves);
@@ -141,6 +146,21 @@ Move* Player::minimax(){
 		screenmoves.erase(*maxpos);
 	}
 	return new Move(max, color);
+}
+
+Move* Player::random(){
+	Position pos;
+	while(true){
+		pos = Position(rand() % size, rand() % size);
+		if(board->get(pos) == EMPTY) return new Move(pos, color);
+	}
+}
+
+bool Player::timeToGuess(clock_t start){
+	clock_t now = clock();
+
+	if(((now - start) / CLOCKS_PER_SEC) > 20) return true;
+	else return false;
 }
 
 
