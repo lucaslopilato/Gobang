@@ -23,7 +23,8 @@ bool Board::move(Move* move){
 	//If valid, update and return success
 	board[col][row] = move->color();
 	in++;
-	available.erase(move->position()); //remove the position from available options
+	assert(available[col].find(move->position()) != available[col].end());
+	available[col].erase(move->position()); //remove the position from available options
 
 	this->print();
 	move->print();
@@ -123,6 +124,9 @@ int Board::getIn(){return this->in;}
 Board::Board(int size) : size(size) {
 	std::cout << "Size: "<<size<<", Depth: 1"<<std::endl;
 
+	//Instantiate the Array of Available Moves
+	available = new std::set<Position>[size];
+
 	//Instantiate the board
 	this->board = new Color*[size];
 	for(int i=0; i<size; i++){
@@ -132,7 +136,7 @@ Board::Board(int size) : size(size) {
 		for(int j=0; j<size; j++){
 			this->board[i][j] = EMPTY;
 			//Populate possible moves
-			available.insert(Position(i,j));
+			available[j].insert(Position(i,j));
 		}
 	}
 
@@ -143,42 +147,6 @@ Board::Board(int size) : size(size) {
 	this->lastmove = NULL;
 }
 
-//Create a new board from an old board and another position
-//New Position must be a valid position (in bounds and at an empty spot)
-/*Board::Board(Board* obj, Move* move, std::map<std::string, int> *scores) throw(std::invalid_argument){
-	if(move == NULL || obj == NULL || !obj->validMove(move))
-		throw std::invalid_argument("Invalid value for copy constructor");
-
-
-	//Instantiate the board
-	this->size = obj->size;
-
-	this->board = new Color*[size];
-	for(int i=0; i<size; i++)
-		this->board[i] = new Color[size];
-
-	//Copy values over
-	for(int i=0; i<size; i++){
-		for(int j=0; j<size; j++){
-			this->board[i][j] = obj->board[i][j];
-		}
-	}
-
-	//Copy Over Move
-	this->board[move->position().first][move->position().second] = move->color();
-
-	this->in = obj->in + 1;
-	this->maxcap = obj->maxcap;
-	this->lastmove = move;
-
-
-	//Rescore new board
-	this->boardScore = this->score(move->color(), scores);
-}*/
-
-
-
-
 
 //Destruct Board
 Board::~Board(){
@@ -187,6 +155,7 @@ Board::~Board(){
 	}
 
 	delete [] board;
+	delete [] available;
 
 	if(lastmove != NULL) delete lastmove;
 }

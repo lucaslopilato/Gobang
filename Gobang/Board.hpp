@@ -8,6 +8,7 @@
 #include <math.h>
 #include <stdexcept>
 #include <set>
+#include <assert.h>
 
 
 
@@ -16,7 +17,6 @@ class Board
 {
 public:
 	Board(int size);
-	Board(Board* obj, Move* move, std::map<std::string, int> *scores) throw(std::invalid_argument);
 	~Board();
 
 	//Actions 
@@ -47,7 +47,8 @@ public:
 	void printLastMove();
 	void printColor(Color color);
 
-	std::set<Position> available;
+	std::set<Position>* available;
+	
 
 private:
 	//Board Information
