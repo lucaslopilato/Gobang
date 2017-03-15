@@ -116,9 +116,8 @@ Move* Player::minimax(){
 		for(minpos = board->available.begin(); minpos != board->available.end(); ++minpos){
 			//Make sure we have time to start searching again
 			if(timeToGuess(start)){
-				std::cout << "GUessing" <<std::endl;
-				if(score > 0){ std::cout << "stored val" <<std::endl; return new Move(max, color); }
-				else { std::cout << "random val" << std::endl; return new Move(*minpos, color);}
+				if(score > 0){ return new Move(max, color); }
+				else { return new Move(*minpos, color);}
 			}
 			if(minpos != maxpos){
 				screenmoves[*minpos]=other; //simulate the move by the other player
