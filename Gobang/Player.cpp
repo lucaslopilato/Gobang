@@ -174,11 +174,11 @@ Player::Player(int size, Color color):color(color), size(size){
 	scores["YEXXEEY"]=100;
 	
 	//1 Combos
-	scores["XEEEE"]=1;
+	/*scores["XEEEE"]=1;
 	scores["EEEEX"]=1;
 	scores["EEXEE"]=1;
 	scores["EXEEE"]=1;
-	scores["EEEXE"]=1;
+	scores["EEEXE"]=1;*/
 }
 
 Player::~Player(){

@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <set>
 #include <assert.h>
+#include <pthread.h>
 
 
 
@@ -47,7 +48,7 @@ public:
 	void printLastMove();
 	void printColor(Color color);
 
-	std::set<Position>* available;
+	std::set<Position> available;
 	
 
 private:

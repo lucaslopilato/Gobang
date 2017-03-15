@@ -23,8 +23,7 @@ bool Board::move(Move* move){
 	//If valid, update and return success
 	board[col][row] = move->color();
 	in++;
-	assert(available[col].find(move->position()) != available[col].end());
-	available[col].erase(move->position()); //remove the position from available options
+	available.erase(move->position()); //remove the position from available options
 
 	this->print();
 	move->print();
@@ -124,9 +123,6 @@ int Board::getIn(){return this->in;}
 Board::Board(int size) : size(size) {
 	std::cout << "Size: "<<size<<", Depth: 1"<<std::endl;
 
-	//Instantiate the Array of Available Moves
-	available = new std::set<Position>[size];
-
 	//Instantiate the board
 	this->board = new Color*[size];
 	for(int i=0; i<size; i++){
@@ -136,7 +132,7 @@ Board::Board(int size) : size(size) {
 		for(int j=0; j<size; j++){
 			this->board[i][j] = EMPTY;
 			//Populate possible moves
-			available[j].insert(Position(i,j));
+			available.insert(Position(i,j));
 		}
 	}
 
@@ -155,7 +151,6 @@ Board::~Board(){
 	}
 
 	delete [] board;
-	delete [] available;
 
 	if(lastmove != NULL) delete lastmove;
 }
