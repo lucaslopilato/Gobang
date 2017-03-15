@@ -241,6 +241,8 @@ int Board::score(Color color, std::map<std::string, int> *scores, std::map<Posit
 		}
 	}
 
+	if(timeToGuess(start)) return 0;
+
 	//Now Parse Vector of Strings to Score
 	int score = 0;
 	for(std::vector<std::string>::iterator it = strs.begin();
