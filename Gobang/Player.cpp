@@ -110,7 +110,7 @@ Move* Player::minimax(){
 	for(maxpos = (board->available.begin()); maxpos != board->available.end(); ++maxpos){
 		screenmoves[*maxpos]=color;
 
-		maxtemp = board->getScore(color, &scores, &screenmoves);
+		maxtemp = board->getScore(color, &scores, &screenmoves, start);
 
 		//Create a move to represent a potential max move
 		for(minpos = board->available.begin(); minpos != board->available.end(); ++minpos){
@@ -123,7 +123,7 @@ Move* Player::minimax(){
 				screenmoves[*minpos]=other; //simulate the move by the other player
 
 				//Get the score if these moves were played
-				mintemp = board->getScore(other, &scores, &screenmoves);
+				mintemp = board->getScore(other, &scores, &screenmoves, start);
 
 				if(score == 0){
 					max = *maxpos;
