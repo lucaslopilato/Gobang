@@ -114,13 +114,18 @@ Move* Player::minimax(){
 			if(score > 0) return new Move(max, color);
 			else return random();
 		}
-		
+
 		screenmoves[*maxpos]=color;
 
 		maxtemp = board->getScore(color, &scores, &screenmoves);
 
 		//Create a move to represent a potential max move
 		for(minpos = board->available.begin(); minpos != board->available.end(); ++minpos){
+			//Make sure we have time to start searching again
+			if(size > 10 && timeToGuess(start)){
+				if(score > 0) return new Move(max, color);
+				else return random();
+			}
 			if(minpos != maxpos){
 				screenmoves[*minpos]=other; //simulate the move by the other player
 
