@@ -253,10 +253,10 @@ std::string Board::parseDirectionStr(Position pos, Dir dir, Color color, std::ma
 	bool interesting = false; //Keeps track of wheter and X was ever found
 
 	//Get the preceeding character
-	/*if(!validPosition(d.opposite(dir))){
+	if(!validPosition(d.opposite(dir))){
 		str += "Y";
 		d.next(dir); //Move Cursor back
-	}*/
+	}
 
 	//Get First Position
 	Color current = get(pos, screenmoves);

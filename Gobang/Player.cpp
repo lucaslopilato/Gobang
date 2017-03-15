@@ -162,7 +162,7 @@ Player::Player(int size, Color color):color(color), size(size){
 	(color == LIGHT) ? other = DARK : other = LIGHT;
 
 	//Initialize Scoring Dictionary
-	scores["XXXXX"]=1000000;	
+	/*scores["XXXXX"]=1000000;	
 	scores["EXXXXE"]=300000;	
 	scores["XXXXE"]=2500;	
 	scores["EXXXX"]=2500;
@@ -181,10 +181,10 @@ Player::Player(int size, Color color):color(color), size(size){
 	scores["XXEEE"]=150;	
 	scores["EEEXX"]=150;	
 	scores["EEXEXEE"]=250;	
-	scores["EXEEXE"]=200;	
+	scores["EXEEXE"]=200;	*/
 
 
-	/*scores["XXXXX"]=100000; //5 In a Row
+	scores["XXXXX"]=100000; //5 In a Row
 
 	//4 Combos
 	scores["EXXXXE"]=50000; 
@@ -218,7 +218,7 @@ Player::Player(int size, Color color):color(color), size(size){
 	scores["EEEEX"]=1;
 	scores["EEXEE"]=1;
 	scores["EXEEE"]=1;
-	scores["EEEXE"]=1;*/
+	scores["EEEXE"]=1;
 }
 
 Player::~Player(){
