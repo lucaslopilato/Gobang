@@ -263,9 +263,6 @@ std::string Board::parseDirectionStr(Position pos, Dir dir, Color color, std::ma
 
 	while(validPosition(pos)){
 		current = get(pos, screenmoves);
-		//printPosition(pos);
-		//std::cout <<"color: ";
-		//printColor(current);
 
 		//Parse Current Position
 		if(current == EMPTY){str += 'E';}
@@ -283,7 +280,6 @@ std::string Board::parseDirectionStr(Position pos, Dir dir, Color color, std::ma
 	//Push Final String
 	if(str.length() >= 5 && interesting){
 		return str;
-		//std::cout << "String added: " << str << std::endl;
 	}
 
 	return "";
