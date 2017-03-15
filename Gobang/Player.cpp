@@ -143,7 +143,12 @@ Move* Player::minimax(){
 
 		screenmoves.erase(*maxpos);
 	}
-	return new Move(max, color);
+	Move * ret = new Move(max, color);
+	if(board->validMove(ret)) return ret;
+	else{
+		delete ret;
+		return new Move(*(board->available.begin()), color);
+	}
 }
 
 bool Player::timeToGuess(clock_t start){
