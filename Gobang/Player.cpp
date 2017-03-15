@@ -58,7 +58,7 @@ Move* Player::comTurn(){
 	std::cout << " player (COM) is calculating its next move...";
 	std::cout << "(this might take up to 30 seconds)" << std::endl;
 
-	if(board->getIn() < 2){
+	if(board->getIn() <= 2){
 		if(board->get(Position(size/2, size/2)))
 			return new Move(Position(size/2, size/2), color);
 		else return new Move(Position(), color);
@@ -103,10 +103,13 @@ Move* Player::minimax(){
 	int maxtemp = 0;
 	int mintemp = 0;
 
+	int count = 0;
+
 	//Iterate over all possible moves
 	std::set<Position>::iterator maxpos, minpos;
 	std::map<Position,Color> screenmoves;
 	for(maxpos = (board->available.begin()); maxpos != board->available.end(); ++maxpos){
+		count++;
 		screenmoves[*maxpos]=color;
 
 		maxtemp = board->getScore(color, &scores, &screenmoves);
@@ -137,7 +140,6 @@ Move* Player::minimax(){
 
 		screenmoves.erase(*maxpos);
 	}
-
 	return new Move(max, color);
 }
 

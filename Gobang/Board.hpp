@@ -49,13 +49,12 @@ public:
 	void printColor(Color color);
 
 	std::set<Position> available;
-	
+	int maxcap; //Max capacity
 
 private:
 	//Board Information
 	int size;
 	Color** board;
-	int maxcap; //Max capacity
 	int in; //Count of Pieces in board
 	Move* lastmove; //Last Move Played
 
@@ -69,7 +68,7 @@ private:
 
 
 	int score(Color col, std::map<std::string, int> *scores, std::map<Position, Color> *screenmoves);
-	std::vector<std::string>* parseDirectionStr(Position pos, Dir dir, Color color, std::map<Position, Color> *screenmoves);
+	std::string parseDirectionStr(Position pos, Dir dir, Color color, std::map<Position, Color> *screenmoves);
 	int scoreString(std::string str, std::map<std::string, int> *scores);
 	int occurrences(std::string substring, std::string bigstr);
 };

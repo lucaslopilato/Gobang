@@ -70,41 +70,21 @@ Color Board::get(Position pos, std::map<Position, Color> *screenmoves){
 
 Color Board::winner(){
 	if(in < 10) return EMPTY;
-	Dir dirs[8] = {UL,UR,LL,LR,UP,DOWN,LEFT,RIGHT};
-	Position pos;
-	Position cursor;
-	Color col;
-	bool found;
+	std::map<Position, Color> overlay;
+	std::string temp;
 
-	//Parse Vertical Winners
-	for(int i=0; i<size; i++)
-		for(int j=0; j<size; j++){
-
-			//Get the Current position
-			pos = Position(i,j);
-			col = get(pos);
-
-			//If the color found is empty, there is no winner in this position
-			if(col == EMPTY) continue;
-
-			for(int k=0; k<8; k++){
-				//Set the origin
-				Direction dir = Direction(pos);
-				found = true;
-
-				//Check the direction for 5 in a rows
-				for(int l=0; l<4; l++){
-					cursor = dir.next(dirs[k]);
-					if(!validPosition(cursor) || get(cursor) != col){
-						found = false;
-						break;
-					}
-				}
-
-				if(found) return col;
+	//Directions to Check
+	Dir dirs[] = {RIGHT, LR, DOWN, LL};
+	for(int i=0; i<this->size; i++){
+		for(int j=0; j<this->size; j++){
+			for(int k=0; k<4; k++){
+				temp = parseDirectionStr(Position(i,j), dirs[k], LIGHT, &overlay);
+				if(occurrences("XXXXX", temp)) return LIGHT;
+				temp = parseDirectionStr(Position(i,j), dirs[k], DARK, &overlay);
+				if(occurrences("XXXXX", temp)) return DARK;
 			}
-
 		}
+	}
 
 
 	return EMPTY;
@@ -242,7 +222,7 @@ int Board::characters(int target){
 
 int Board::score(Color color, std::map<std::string, int> *scores, std::map<Position,Color> *screenmoves){
 	std::vector<std::string> strs;
-	std::vector<std::string>* temp;
+	std::string temp;
 
 	//Directions to Check
 	Dir dirs[] = {RIGHT, LR, DOWN, LL};
@@ -250,8 +230,8 @@ int Board::score(Color color, std::map<std::string, int> *scores, std::map<Posit
 		for(int j=0; j<this->size; j++){
 			for(int k=0; k<4; k++){
 				temp = parseDirectionStr(Position(i,j), dirs[k], color, screenmoves);
-				strs.insert(strs.end(), temp->begin(), temp->end());
-				delete temp;
+				if(!temp.empty())
+					strs.push_back(temp);
 			}
 		}
 	}
@@ -267,9 +247,8 @@ int Board::score(Color color, std::map<std::string, int> *scores, std::map<Posit
 }
 
 //Parse direction for the scoring string
-std::vector<std::string>* Board::parseDirectionStr(Position pos, Dir dir, Color color, std::map<Position, Color> *screenmoves){
+std::string Board::parseDirectionStr(Position pos, Dir dir, Color color, std::map<Position, Color> *screenmoves){
 	Direction d = Direction(pos);
-	std::vector<std::string> *ret = new std::vector<std::string>;
 	std::string str = "";
 	bool interesting = false; //Keeps track of wheter and X was ever found
 
@@ -300,13 +279,14 @@ std::vector<std::string>* Board::parseDirectionStr(Position pos, Dir dir, Color 
 		pos = d.next(dir);
 	}
 
+
 	//Push Final String
 	if(str.length() >= 5 && interesting){
-		ret->push_back(str);
+		return str;
 		//std::cout << "String added: " << str << std::endl;
 	}
 
-	return ret;
+	return "";
 }
 
 
