@@ -15,8 +15,11 @@ public:
 	void play();
 
 	//Turn Handling
-	Board* humanTurn();
-	Board* comTurn();
+	Move* humanTurn();
+	Move* comTurn();
+
+	//Minimax
+	Move* minimax();
 
 private:
 	Color color;

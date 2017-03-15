@@ -7,6 +7,7 @@
 #include "Direction.hpp"
 #include <math.h>
 #include <stdexcept>
+#include <set>
 
 
 
@@ -31,8 +32,11 @@ public:
 	bool validPosition(Position pos);
 	bool validMove(Move* move);
 	int getScore();
+	int getScore(Color color, const std::map<std::string, int> &scores, const std::map<Position, Color> &screenMoves);
+	int getIn();
 
 	Color get(Position pos);
+	Color get(Position pos, const std::map<Position, Color> &screenmoves);
 
 	//Returns winning color or EMPTY if no one has won
 	Color winner(); 
@@ -41,18 +45,20 @@ public:
 	void print();
 	void printPosition(Position pos);
 	void printLastMove();
+	void printColor(Color color);
+
+	std::set<Position> available;
 
 private:
+	//Board Information
 	int size;
 	Color** board;
-
 	int maxcap; //Max capacity
 	int in; //Count of Pieces in board
-	Move* lastmove;
+	Move* lastmove; //Last Move Played
 
 
 	/*******Helpers******/
-	void scoreDirection(Position origin, Color color, Dir dir, std::vector<int>* agg); 
 
 	//Find Number of characters in a positive number
 	int characters(int target);
@@ -60,8 +66,8 @@ private:
 	int boardScore;
 
 
-	int score(Color col, std::map<std::string, int> *scores);
-	std::vector<std::string> parseDirectionStr(Position pos, Dir dir, Color color);
-	int scoreString(std::string str, std::map<std::string, int> *scores);
+	int score(Color col, const std::map<std::string, int> &scores, const std::map<Position, Color> &screenmoves);
+	std::vector<std::string> parseDirectionStr(Position pos, Dir dir, Color color, const std::map<Position, Color> &screenmoves);
+	int scoreString(std::string str, const std::map<std::string, int> &scores);
 	int occurrences(std::string substring, std::string bigstr);
 };

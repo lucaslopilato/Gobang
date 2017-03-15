@@ -23,6 +23,7 @@ bool Board::move(Move* move){
 	//If valid, update and return success
 	board[col][row] = move->color();
 	in++;
+	available.erase(move->position()); //remove the position from available options
 
 	this->print();
 	move->print();
@@ -34,58 +35,6 @@ bool Board::move(Move* move){
 /********************Inquiries************************/
 
 bool Board::isFull(){return (in >= maxcap);}
-
-//Find the Best Possible Move Given a Color
-Move* Board::bestMove(Color color){
-
-	//Record Keeping for the Best Possible Move
-	Position best = Position(0,0);
-	int bscore = score(best, color);
-	int nscore;
-	Position npos;
-
-	//Check all spots for the best move
-	for(int i=0; i<size; i++){
-		for(int j=0; j<size; j++){
-			npos = Position(i,j);
-			nscore = score(npos, color);
-			if(nscore > bscore){
-				bscore = nscore;
-				best = npos;
-			}
-		}
-	}
-
-	return new Move(best, bscore, color);
-}
-
-//Find the score of the position on the board
-int Board::score(Position pos, Color color){
-	int score = 0;
-	
-	//Keep Track of all consecutive pieces in all directions
-	std::vector<int> total = std::vector<int>();
-
-	//Check if the spot is open
-	if(!validPosition(pos)) return -1;
-	if(get(pos) != EMPTY) return -1;
-
-	//Find Consecutive pieces in All Directions
-	Dir dirs[8] = {UL,UR, LL, LR, UP, DOWN, LEFT, RIGHT};
-	for(int i=0; i<8; i++){
-		scoreDirection(pos, color, dirs[i], &total);
-	}
-
-	//Calculate Score
-	for(unsigned int i=0; i<total.size(); i++){
-		score += pow(10, total[i]);
-	}
-
-	return score;
-}
-
-
-
 
 //Determine if position given is valid on the board
 bool Board::validPosition(Position pos){
@@ -104,8 +53,19 @@ bool Board::validMove(Move* move){
 	else return true;
 }
 
+//Returns the color at a location
 Color Board::get(Position pos){
 	return board[pos.first][pos.second];
+}
+
+//Returns the color at a location, or if the position is in the screenmove, will return that
+Color Board::get(Position pos,const std::map<Position, Color> &screenmoves){
+	try{
+		return screenmoves.at(pos);
+	}
+	catch(...){
+		return board[pos.first][pos.second];
+	}
 }
 
 Color Board::winner(){
@@ -149,9 +109,13 @@ Color Board::winner(){
 	return EMPTY;
 }
 
+//Gets the score of board had these moves been played
+int Board::getScore(Color color, const std::map<std::string,int> &scores, const std::map<Position, Color> &screenmoves){
+	return score(color, scores, screenmoves);
+}
 
-
-
+int Board::getScore(){ return this->boardScore;}
+int Board::getIn(){return this->in;}
 
 /**********************Setup / Teardown ************/
 
@@ -165,8 +129,11 @@ Board::Board(int size) : size(size) {
 		this->board[i] = new Color[size];
 
 		//Set values equal to EMPTY
-		for(int j=0; j<size; j++)
+		for(int j=0; j<size; j++){
 			this->board[i][j] = EMPTY;
+			//Populate possible moves
+			available.insert(Position(i,j));
+		}
 	}
 
 	//Instantiate Member Vars
@@ -178,7 +145,7 @@ Board::Board(int size) : size(size) {
 
 //Create a new board from an old board and another position
 //New Position must be a valid position (in bounds and at an empty spot)
-Board::Board(Board* obj, Move* move, std::map<std::string, int> *scores) throw(std::invalid_argument){
+/*Board::Board(Board* obj, Move* move, std::map<std::string, int> *scores) throw(std::invalid_argument){
 	if(move == NULL || obj == NULL || !obj->validMove(move))
 		throw std::invalid_argument("Invalid value for copy constructor");
 
@@ -207,7 +174,7 @@ Board::Board(Board* obj, Move* move, std::map<std::string, int> *scores) throw(s
 
 	//Rescore new board
 	this->boardScore = this->score(move->color(), scores);
-}
+}*/
 
 
 
@@ -282,29 +249,14 @@ void Board::printPosition(Position pos){
 
 void Board::printLastMove(){ this->lastmove->print(); }
 
-/***************************Helpers***************/
-void Board::scoreDirection(Position origin, Color color, Dir dir, std::vector<int>* agg){
-	if(agg == NULL){
-		std::cout << "ERROR: nonvalid agg vector passed to scoreDirection" <<std::endl;
-	}
-	Direction d = Direction(origin);
-	Position current;
-	
-	std::vector<int> consecutive = std::vector<int>(1);
-	for(int i=0; i<4; i++){
-		current = d.next(dir);
-		//Check if position is valid
-		if(!validPosition(current)) return;
-
-		//If valid, score
-		if(get(current) == EMPTY) consecutive.push_back(0);
-		else if(get(current) == color) consecutive[consecutive.back()] = consecutive[consecutive.back()] + 1;
-		else return;
-	}
-
-	//update aggregation vector
-	agg->insert(agg->end(), consecutive.begin(), consecutive.end());
+void Board::printColor(Color color){
+	if(color == EMPTY) std::cout << "EMPTY" <<std::endl;
+	else if(color == LIGHT) std::cout << "LIGHT" <<std::endl;
+	else std::cout << "DARK" <<std::endl;
 }
+
+/***************************Helpers***************/
+
 
 int Board::characters(int target){
 	if(target <  0) return 0;
@@ -323,7 +275,7 @@ int Board::characters(int target){
 /*************************Scoring Functions****************************/
 
 
-int Board::score(Color color, std::map<std::string, int> *scores){
+int Board::score(Color color, const std::map<std::string, int> &scores, const std::map<Position,Color> &screenmoves){
 	std::vector<std::string> strs;
 	std::vector<std::string> temp;
 
@@ -332,7 +284,7 @@ int Board::score(Color color, std::map<std::string, int> *scores){
 	for(int i=0; i<this->size; i++){
 		for(int j=0; j<this->size; j++){
 			for(int k=0; k<4; k++){
-				temp = parseDirectionStr(Position(i,j), dirs[k], color);
+				temp = parseDirectionStr(Position(i,j), dirs[k], color, screenmoves);
 				strs.insert(strs.end(), temp.begin(), temp.end());
 			}
 		}
@@ -349,10 +301,11 @@ int Board::score(Color color, std::map<std::string, int> *scores){
 }
 
 //Parse direction for the scoring string
-std::vector<std::string> Board::parseDirectionStr(Position pos, Dir dir, Color color){
+std::vector<std::string> Board::parseDirectionStr(Position pos, Dir dir, Color color, const std::map<Position, Color> &screenmoves){
 	Direction d = Direction(pos);
 	std::vector<std::string> ret;
 	std::string str = "";
+	bool interesting = false; //Keeps track of wheter and X was ever found
 
 	//Get the preceeding character
 	if(!validPosition(d.opposite(dir))){
@@ -361,14 +314,20 @@ std::vector<std::string> Board::parseDirectionStr(Position pos, Dir dir, Color c
 	}
 
 	//Get First Position
-	Color current = get(pos);
+	Color current = get(pos, screenmoves);
 
 	while(validPosition(pos)){
-		current = get(pos);
+		current = get(pos, screenmoves);
+		//printPosition(pos);
+		//std::cout <<"color: ";
+		//printColor(current);
 
 		//Parse Current Position
 		if(current == EMPTY){str += 'E';}
-		else if(current == color){ str+= 'X'; }//Friendly
+		else if(current == color){
+			str+= 'X';
+			interesting = true;
+		}//Friendly
 		else{ str += 'Y';} //Enemy
 
 		//Get New Position
@@ -379,22 +338,20 @@ std::vector<std::string> Board::parseDirectionStr(Position pos, Dir dir, Color c
 	str += 'Y';
 
 	//Push Final String
-	if(str.length() >= 5)
+	if(str.length() >= 5 && interesting){
 		ret.push_back(str);
+		//std::cout << "String added: " << str << std::endl;
+	}
 
 	return ret;
 }
 
 
 //Score a string using regex matching
-int Board::scoreString(std::string str, std::map<std::string, int> *scores){
+int Board::scoreString(std::string str,const std::map<std::string, int> &scores){
 	int score = 0;
-	if(scores == NULL){
-		std::cout << "scores should not be null"<<std::endl;
-		return score;
-	}
 
-	for(std::map<std::string, int>::iterator iter = scores->begin(); iter != scores->end(); ++iter){
+	for(std::map<std::string, int>::const_iterator iter = scores.begin(); iter != scores.end(); ++iter){
 		score += occurrences(iter->first, str) * iter->second;
 	}
 
@@ -413,4 +370,3 @@ int Board::occurrences(std::string substring, std::string bigstr){
 	return occ;
 }
 
-int Board::getScore(){ return this->boardScore;}

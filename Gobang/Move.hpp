@@ -10,24 +10,16 @@ enum Color{LIGHT, DARK, EMPTY};
 class Move
 {
 public:
-	Move(Position pos, int score, Color color);
+	Move(Position pos, Color color);
 	~Move();
 
 	Position position();
-	int score();
 	Color color();
 
-	void setAttributes(Position pos, int score, Color color);
+	void setAttributes(Position pos, Color color);
 	void print();
 
-	//Operator Overloading
-	bool operator <(const Move& other) {return this->sco < other.sco;}
-	bool operator >(const Move& other) {return this->sco > other.sco;}
-	bool operator ==(const Move& other) {return this->sco == other.sco;}
-	bool operator <=(const Move& other) {return this->sco <= other.sco;}
-	bool operator >=(const Move& other) {return this->sco >= other.sco;}
 private:
 	Position pos;
-	int sco; //score
 	Color col;
 };
