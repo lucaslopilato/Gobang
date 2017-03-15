@@ -108,13 +108,6 @@ Move* Player::minimax(){
 	std::set<Position>::iterator maxpos, minpos;
 	std::map<Position,Color> screenmoves;
 	for(maxpos = (board->available.begin()); maxpos != board->available.end(); ++maxpos){
-		
-		//Make sure we have time to start searching again
-		if(timeToGuess(start)){
-			if(score > 0) return new Move(max, color);
-			else return random();
-		}
-
 		screenmoves[*maxpos]=color;
 
 		maxtemp = board->getScore(color, &scores, &screenmoves);
@@ -122,9 +115,9 @@ Move* Player::minimax(){
 		//Create a move to represent a potential max move
 		for(minpos = board->available.begin(); minpos != board->available.end(); ++minpos){
 			//Make sure we have time to start searching again
-			if(size > 10 && timeToGuess(start)){
+			if(timeToGuess(start)){
 				if(score > 0) return new Move(max, color);
-				else return random();
+				else return new Move(*minpos, color);
 			}
 			if(minpos != maxpos){
 				screenmoves[*minpos]=other; //simulate the move by the other player
@@ -153,18 +146,10 @@ Move* Player::minimax(){
 	return new Move(max, color);
 }
 
-Move* Player::random(){
-	Position pos;
-	while(true){
-		pos = Position(rand() % size, rand() % size);
-		if(board->get(pos) == EMPTY) return new Move(pos, color);
-	}
-}
-
 bool Player::timeToGuess(clock_t start){
 	clock_t now = clock();
 
-	if(((now - start) / CLOCKS_PER_SEC) > 20) return true;
+	if(((now - start) / CLOCKS_PER_SEC) > 15) return true;
 	else return false;
 }
 
