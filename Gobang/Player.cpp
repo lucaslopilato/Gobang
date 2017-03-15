@@ -116,6 +116,7 @@ Move* Player::minimax(){
 		for(minpos = board->available.begin(); minpos != board->available.end(); ++minpos){
 			//Make sure we have time to start searching again
 			if(timeToGuess(start)){
+				std::cout << "GUessing" <<std::endl;
 				if(score > 0) return new Move(max, color);
 				else return new Move(*minpos, color);
 			}
@@ -149,7 +150,7 @@ Move* Player::minimax(){
 bool Player::timeToGuess(clock_t start){
 	clock_t now = clock();
 
-	if(((now - start) / CLOCKS_PER_SEC) > 15) return true;
+	if((now - start) > 10000) return true;
 	else return false;
 }
 
