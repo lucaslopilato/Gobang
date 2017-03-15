@@ -91,8 +91,8 @@ Color Board::winner(){
 }
 
 //Gets the score of board had these moves been played
-int Board::getScore(Color color,std::map<std::string,int> *scores, std::map<Position, Color> *screenmoves){
-	return score(color, scores, screenmoves);
+int Board::getScore(Color color,std::map<std::string,int> *scores, std::map<Position, Color> *screenmoves, clock_t start){
+	return score(color, scores, screenmoves, start);
 }
 
 int Board::getScore(){ return this->boardScore;}
@@ -215,12 +215,17 @@ int Board::characters(int target){
 	return count;
 }
 
+bool Board::timeToGuess(clock_t start){
+	if((clock() - start) / CLOCKS_PER_SEC > 20) return true;
+	else return false;
+}
+
 
 
 /*************************Scoring Functions****************************/
 
 
-int Board::score(Color color, std::map<std::string, int> *scores, std::map<Position,Color> *screenmoves){
+int Board::score(Color color, std::map<std::string, int> *scores, std::map<Position,Color> *screenmoves, clock_t start){
 	std::vector<std::string> strs;
 	std::string temp;
 
@@ -240,6 +245,7 @@ int Board::score(Color color, std::map<std::string, int> *scores, std::map<Posit
 	int score = 0;
 	for(std::vector<std::string>::iterator it = strs.begin();
 		it != strs.end(); ++it){
+		if(timeToGuess(start)) return score;
 		score += scoreString(*it, scores);
 	}
 

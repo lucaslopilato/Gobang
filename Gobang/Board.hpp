@@ -8,8 +8,7 @@
 #include <math.h>
 #include <stdexcept>
 #include <set>
-#include <assert.h>
-
+#include <time.h>
 
 
 //Representation of the board
@@ -32,7 +31,7 @@ public:
 	bool validPosition(Position pos);
 	bool validMove(Move* move);
 	int getScore();
-	int getScore(Color color, std::map<std::string, int> *scores, std::map<Position, Color> *screenMoves);
+	int getScore(Color color, std::map<std::string, int> *scores, std::map<Position, Color> *screenMoves, clock_t start);
 	int getIn();
 
 	Color get(Position pos);
@@ -51,6 +50,7 @@ public:
 	int maxcap; //Max capacity
 
 private:
+	bool timeToGuess(clock_t start);
 	//Board Information
 	int size;
 	Color** board;
@@ -66,7 +66,7 @@ private:
 	int boardScore;
 
 
-	int score(Color col, std::map<std::string, int> *scores, std::map<Position, Color> *screenmoves);
+	int score(Color col, std::map<std::string, int> *scores, std::map<Position, Color> *screenmoves, clock_t start);
 	std::string parseDirectionStr(Position pos, Dir dir, Color color, std::map<Position, Color> *screenmoves);
 	int scoreString(std::string str, std::map<std::string, int> *scores);
 	int occurrences(std::string substring, std::string bigstr);
