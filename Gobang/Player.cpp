@@ -150,7 +150,7 @@ Move* Player::minimax(){
 bool Player::timeToGuess(clock_t start){
 	clock_t now = clock();
 
-	if((now - start) > 20000) return true;
+	if((now - start) / CLOCKS_PER_SEC > 20) return true;
 	else return false;
 }
 
