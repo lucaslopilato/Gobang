@@ -103,7 +103,7 @@ Move* Player::minimax(){
 	for(maxpos = (board->available.begin()); maxpos != board->available.end(); ++maxpos){
 		screenmoves[*maxpos]=color;
 
-		maxtemp = board->getScore(color, scores, screenmoves);
+		maxtemp = board->getScore(color, &scores, &screenmoves);
 
 		//Create a move to represent a potential max move
 		for(minpos = board->available.begin(); minpos != board->available.end(); ++minpos){
@@ -111,7 +111,7 @@ Move* Player::minimax(){
 				screenmoves[*minpos]=other; //simulate the move by the other player
 
 				//Get the score if these moves were played
-				mintemp = board->getScore(other, scores, screenmoves);
+				mintemp = board->getScore(other, &scores, &screenmoves);
 
 				if(score == 0){
 					max = *maxpos;
@@ -144,7 +144,29 @@ Player::Player(int size, Color color):color(color), size(size){
 	(color == LIGHT) ? other = DARK : other = LIGHT;
 
 	//Initialize Scoring Dictionary
-	scores["XXXXX"]=100000; //5 In a Row
+	scores["XXXXX"]=1000000;	
+	scores["EXXXXE"]=300000;	
+	scores["XXXXE"]=2500;	
+	scores["EXXXX"]=2500;
+	scores["XXXEX"]=3000;	
+	scores["XEXXX"]=3000;	
+	scores["XXEXX"]=2600;
+	scores["EEXXXEE"]=3000;	
+	scores["XXXEE"]=500;	
+	scores["EEXXX"]=500;	
+	scores["EXEXXE"]=800;	
+	scores["EXXEXE"]=800;	
+	scores["XEEXX"]=600;	
+	scores["XXEEX"]=600;	
+	scores["XEXEX"]=550;	
+	scores["EEEXXEEE"]=650;	
+	scores["XXEEE"]=150;	
+	scores["EEEXX"]=150;	
+	scores["EEXEXEE"]=250;	
+	scores["EXEEXE"]=200;	
+
+
+	/*scores["XXXXX"]=100000; //5 In a Row
 
 	//4 Combos
 	scores["EXXXXE"]=50000; 
@@ -174,7 +196,7 @@ Player::Player(int size, Color color):color(color), size(size){
 	scores["YEXXEEY"]=100;
 	
 	//1 Combos
-	/*scores["XEEEE"]=1;
+	scores["XEEEE"]=1;
 	scores["EEEEX"]=1;
 	scores["EEXEE"]=1;
 	scores["EXEEE"]=1;

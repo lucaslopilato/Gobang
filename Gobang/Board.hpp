@@ -33,11 +33,11 @@ public:
 	bool validPosition(Position pos);
 	bool validMove(Move* move);
 	int getScore();
-	int getScore(Color color, const std::map<std::string, int> &scores, const std::map<Position, Color> &screenMoves);
+	int getScore(Color color, std::map<std::string, int> *scores, std::map<Position, Color> *screenMoves);
 	int getIn();
 
 	Color get(Position pos);
-	Color get(Position pos, const std::map<Position, Color> &screenmoves);
+	Color get(Position pos, std::map<Position, Color> *screenmoves);
 
 	//Returns winning color or EMPTY if no one has won
 	Color winner(); 
@@ -68,8 +68,8 @@ private:
 	int boardScore;
 
 
-	int score(Color col, const std::map<std::string, int> &scores, const std::map<Position, Color> &screenmoves);
-	std::vector<std::string> parseDirectionStr(Position pos, Dir dir, Color color, const std::map<Position, Color> &screenmoves);
-	int scoreString(std::string str, const std::map<std::string, int> &scores);
+	int score(Color col, std::map<std::string, int> *scores, std::map<Position, Color> *screenmoves);
+	std::vector<std::string>* parseDirectionStr(Position pos, Dir dir, Color color, std::map<Position, Color> *screenmoves);
+	int scoreString(std::string str, std::map<std::string, int> *scores);
 	int occurrences(std::string substring, std::string bigstr);
 };

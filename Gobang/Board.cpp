@@ -59,9 +59,9 @@ Color Board::get(Position pos){
 }
 
 //Returns the color at a location, or if the position is in the screenmove, will return that
-Color Board::get(Position pos,const std::map<Position, Color> &screenmoves){
+Color Board::get(Position pos, std::map<Position, Color> *screenmoves){
 	try{
-		return screenmoves.at(pos);
+		return screenmoves->at(pos);
 	}
 	catch(...){
 		return board[pos.first][pos.second];
@@ -110,7 +110,7 @@ Color Board::winner(){
 }
 
 //Gets the score of board had these moves been played
-int Board::getScore(Color color, const std::map<std::string,int> &scores, const std::map<Position, Color> &screenmoves){
+int Board::getScore(Color color,std::map<std::string,int> *scores, std::map<Position, Color> *screenmoves){
 	return score(color, scores, screenmoves);
 }
 
@@ -239,9 +239,9 @@ int Board::characters(int target){
 /*************************Scoring Functions****************************/
 
 
-int Board::score(Color color, const std::map<std::string, int> &scores, const std::map<Position,Color> &screenmoves){
+int Board::score(Color color, std::map<std::string, int> *scores, std::map<Position,Color> *screenmoves){
 	std::vector<std::string> strs;
-	std::vector<std::string> temp;
+	std::vector<std::string>* temp;
 
 	//Directions to Check
 	Dir dirs[] = {RIGHT, LR, DOWN, LL};
@@ -249,7 +249,8 @@ int Board::score(Color color, const std::map<std::string, int> &scores, const st
 		for(int j=0; j<this->size; j++){
 			for(int k=0; k<4; k++){
 				temp = parseDirectionStr(Position(i,j), dirs[k], color, screenmoves);
-				strs.insert(strs.end(), temp.begin(), temp.end());
+				strs.insert(strs.end(), temp->begin(), temp->end());
+				delete temp;
 			}
 		}
 	}
@@ -265,17 +266,17 @@ int Board::score(Color color, const std::map<std::string, int> &scores, const st
 }
 
 //Parse direction for the scoring string
-std::vector<std::string> Board::parseDirectionStr(Position pos, Dir dir, Color color, const std::map<Position, Color> &screenmoves){
+std::vector<std::string>* Board::parseDirectionStr(Position pos, Dir dir, Color color, std::map<Position, Color> *screenmoves){
 	Direction d = Direction(pos);
-	std::vector<std::string> ret;
+	std::vector<std::string> *ret = new std::vector<std::string>;
 	std::string str = "";
 	bool interesting = false; //Keeps track of wheter and X was ever found
 
 	//Get the preceeding character
-	if(!validPosition(d.opposite(dir))){
+	/*if(!validPosition(d.opposite(dir))){
 		str += "Y";
 		d.next(dir); //Move Cursor back
-	}
+	}*/
 
 	//Get First Position
 	Color current = get(pos, screenmoves);
@@ -298,12 +299,9 @@ std::vector<std::string> Board::parseDirectionStr(Position pos, Dir dir, Color c
 		pos = d.next(dir);
 	}
 
-	//Add one more to display you cannot move further
-	str += 'Y';
-
 	//Push Final String
 	if(str.length() >= 5 && interesting){
-		ret.push_back(str);
+		ret->push_back(str);
 		//std::cout << "String added: " << str << std::endl;
 	}
 
@@ -312,10 +310,10 @@ std::vector<std::string> Board::parseDirectionStr(Position pos, Dir dir, Color c
 
 
 //Score a string using regex matching
-int Board::scoreString(std::string str,const std::map<std::string, int> &scores){
+int Board::scoreString(std::string str,std::map<std::string, int> *scores){
 	int score = 0;
 
-	for(std::map<std::string, int>::const_iterator iter = scores.begin(); iter != scores.end(); ++iter){
+	for(std::map<std::string, int>::const_iterator iter = scores->begin(); iter != scores->end(); ++iter){
 		score += occurrences(iter->first, str) * iter->second;
 	}
 
@@ -330,6 +328,9 @@ int Board::occurrences(std::string substring, std::string bigstr){
 	while(npos != bigstr.npos){
 		occ++;
 		npos = bigstr.find(substring, npos+1);
+	}
+	if(occ > 0){
+		//std::cout << "Pattern found: " << substring <<"found in "<<bigstr<<std::endl;
 	}
 	return occ;
 }
